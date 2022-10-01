@@ -16,9 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
-        ],
+        leading:
+            IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -32,12 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const AccountListView(),
-          const Divider(
-            height: 5,
-            thickness: 2.0,
+          const Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: Divider(
+              height: 5,
+              thickness: 3.0,
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
             child: Text(
               'Transactions',
               style: Theme.of(context).textTheme.headline6,
