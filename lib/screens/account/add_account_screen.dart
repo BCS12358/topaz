@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:topaz/models/account/account.dart';
 import 'package:topaz/models/common/custom_color_collection.dart';
 import 'package:topaz/models/common/custom_icon.dart';
 import 'package:topaz/models/common/custom_icon_collection.dart';
+import 'package:topaz/services/database_service.dart';
 
 import '../../models/common/custom_color.dart';
 
@@ -25,7 +29,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   void initState() {
     super.initState();
     _accountTextController.addListener(() {
-      _accountName = _accountTextController.text;
+      setState(() {
+        _accountName = _accountTextController.text;
+      });
     });
   }
 
@@ -36,10 +42,34 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
         title: const Text('New Account'),
         actions: [
           TextButton(
-              onPressed: (() {}),
-              child: const Text(
+              onPressed: _accountName.length > 3
+                  ? (() async {
+                      final user = Provider.of<User?>(context, listen: false);
+
+                      final newAccount = Account(
+                          id: null,
+                          name: _accountName,
+                          icon: {
+                            'icon': _selectedCustomIcon.id,
+                            'color': _selectedCustomColor.id
+                          });
+
+                      try {
+                        DatabaseService(uid: user!.uid)
+                            .addAccount(account: newAccount);
+                      } catch (e) {
+                        print(e);
+                        //todo:
+                      }
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                    })
+                  : null,
+              child: Text(
                 'Add',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                    color:
+                        _accountName.length > 3 ? Colors.white : Colors.grey),
               ))
         ],
       ),
@@ -48,6 +78,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(
+              height: 50,
+            ),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -88,69 +121,82 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Divider(
-                height: 10,
-                thickness: 5,
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: SizedBox(
+                height: 50,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.all(10),
+                  itemCount: CustomIconCollection().icons.length,
+                  itemBuilder: ((context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedCustomIcon =
+                              CustomIconCollection().icons[index];
+                        });
+                      },
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Icon(
+                          CustomIconCollection().icons[index].iconData,
+                        ),
+                      ),
+                    );
+                  }),
+                  separatorBuilder: ((context, index) {
+                    return const SizedBox(
+                      width: 10,
+                    );
+                  }),
+                ),
               ),
             ),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                for (final ci in CustomIconCollection().icons)
-                  GestureDetector(
-                    onTap: (() {
-                      setState(() {
-                        _selectedCustomIcon = ci;
-                      });
-                    }),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
-                        border: Border.all(color: Colors.white, width: 5),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: SizedBox(
+                height: 50,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.all(10),
+                  itemCount: CustomColorCollection().colors.length,
+                  itemBuilder: ((context, index) {
+                    return GestureDetector(
+                      onTap: (() {
+                        setState(() {
+                          _selectedCustomColor =
+                              CustomColorCollection().colors[index];
+                        });
+                      }),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: CustomColorCollection().colors[index].color,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
                       ),
-                      child: Icon(
-                        ci.iconData,
-                      ),
-                    ),
-                  )
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Divider(
-                height: 10,
-                thickness: 5,
+                    );
+                  }),
+                  separatorBuilder: ((context, index) {
+                    return const SizedBox(
+                      width: 10,
+                    );
+                  }),
+                ),
               ),
-            ),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                for (final cc in CustomColorCollection().colors)
-                  GestureDetector(
-                    onTap: (() {
-                      setState(() {
-                        _selectedCustomColor = cc;
-                      });
-                    }),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: cc.color,
-                        border: Border.all(color: Colors.white, width: 5),
-                      ),
-                    ),
-                  )
-              ],
-            ),
+            )
           ],
         ),
       ),

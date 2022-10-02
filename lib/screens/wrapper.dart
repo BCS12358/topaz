@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:topaz/config/custom_theme.dart';
+import 'package:topaz/models/account/account.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
 import 'package:topaz/screens/auth/authenticate_screen.dart';
 import 'package:topaz/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:topaz/services/database_service.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -14,17 +16,26 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<User?>(context);
     final customTheme = Provider.of<CustomTheme>(context);
 
-    return MaterialApp(
-      title: 'Topaz',
-      initialRoute: '/',
-      routes: {
-        HomeScreen.routeName: ((context) => const HomeScreen()),
-        AddAccountScreen.routeName: ((context) => const AddAccountScreen()),
-      },
-      home: user != null ? const HomeScreen() : const AuthenticateScreen(),
-      theme: customTheme.darkTheme,
-      darkTheme: customTheme.darkTheme,
-      themeMode: customTheme.currentTheme(),
+    return MultiProvider(
+      providers: [
+        StreamProvider<List<Account>>.value(
+            initialData: [],
+            value: user != null
+                ? DatabaseService(uid: user.uid).accountListStream()
+                : null)
+      ],
+      child: MaterialApp(
+        title: 'Topaz',
+        initialRoute: '/',
+        routes: {
+          HomeScreen.routeName: ((context) => const HomeScreen()),
+          AddAccountScreen.routeName: ((context) => const AddAccountScreen()),
+        },
+        home: user != null ? const HomeScreen() : const AuthenticateScreen(),
+        theme: customTheme.darkTheme,
+        darkTheme: customTheme.darkTheme,
+        themeMode: customTheme.currentTheme(),
+      ),
     );
   }
 }

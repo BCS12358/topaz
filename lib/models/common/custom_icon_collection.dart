@@ -11,6 +11,10 @@ class CustomIconCollection {
     CustomIcon(id: 'calendar', iconData: CupertinoIcons.calendar),
     CustomIcon(id: 'ant', iconData: CupertinoIcons.ant),
     CustomIcon(id: 'paintbrush', iconData: CupertinoIcons.paintbrush),
+    CustomIcon(
+        id: 'battery_charging', iconData: CupertinoIcons.battery_charging),
+    CustomIcon(id: 'headphones', iconData: CupertinoIcons.headphones),
+    CustomIcon(id: 'heart', iconData: CupertinoIcons.heart),
   ];
 
   UnmodifiableListView<CustomIcon> get icons => UnmodifiableListView(_icons);

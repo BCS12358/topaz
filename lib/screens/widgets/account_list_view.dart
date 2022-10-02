@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/common/custom_color_collection.dart';
+import 'package:topaz/models/common/custom_icon_collection.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
 
 class AccountListView extends StatelessWidget {
@@ -6,16 +10,25 @@ class AccountListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accounts = Provider.of<List<Account>>(context);
+    accounts.add(
+        Account(id: null, name: 'dummy', icon: {'color': 'a', 'icon': 'b'}));
     return SizedBox(
       height: 180,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.all(10),
-        itemCount: 2,
+        itemCount: accounts.isEmpty ? 1 : accounts.length,
         itemBuilder: ((context, index) {
-          return index < 1
-              ? _buildAccountCard(context, index)
-              : _buildAddNewAccountCard(context);
+          if (accounts.isEmpty) {
+            return _buildAddNewAccountCard(context);
+          }
+
+          if (index == accounts.length - 1) {
+            return _buildAddNewAccountCard(context);
+          }
+
+          return _buildAccountCard(context, accounts[index]);
         }),
         separatorBuilder: ((context, index) {
           return const SizedBox(
@@ -80,7 +93,7 @@ class AccountListView extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountCard(BuildContext context, int index) {
+  Widget _buildAccountCard(BuildContext context, Account account) {
     return Card(
       elevation: 10,
       child: SizedBox(
@@ -97,10 +110,15 @@ class AccountListView extends StatelessWidget {
                   width: 50,
                   height: 50,
                   // padding: const EdgeInsets.all(5.0),
-                  decoration: const BoxDecoration(
-                      color: Colors.red, shape: BoxShape.circle),
-                  child: const Icon(
-                    Icons.house,
+                  decoration: BoxDecoration(
+                      color: CustomColorCollection()
+                          .findColorById(account.icon['color'])!
+                          .color,
+                      shape: BoxShape.circle),
+                  child: Icon(
+                    CustomIconCollection()
+                        .findCustomItembyId(account.icon['icon'])!
+                        .iconData,
                     size: 30,
                     color: Colors.white,
                   ),
@@ -113,7 +131,7 @@ class AccountListView extends StatelessWidget {
                 '0,00',
                 style: Theme.of(context).textTheme.headline5,
               ),
-              const Text('Housing'),
+              Text(account.name),
             ],
           ),
         ),

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:topaz/models/account/account.dart';
 
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class DatabaseService {
   final String uid;
   final FirebaseFirestore _database;
@@ -10,17 +12,17 @@ class DatabaseService {
       : _database = FirebaseFirestore.instance,
         _userRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
-  // Stream<List<TodoList>> todoListStream() {
-  //   return _userRef.collection('todo_lists').snapshots().map(
-  //         (snapshot) => snapshot.docs
-  //             .map(
-  //               (todoListSnapshot) => TodoList.fromJson(
-  //                 todoListSnapshot.data(),
-  //               ),
-  //             )
-  //             .toList(),
-  //       );
-  // }
+  Stream<List<Account>> accountListStream() {
+    return _userRef.collection('accounts').snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (accountListSnapshot) => Account.fromJson(
+                  accountListSnapshot.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
 
   // Stream<List<Reminder>> reminderStream() {
   //   return _userRef.collection('reminders').snapshots().map(
@@ -34,15 +36,15 @@ class DatabaseService {
   //       );
   // }
 
-  // addTodoList({required TodoList todoList}) async {
-  //   final todoListRef = _userRef.collection('todo_lists').doc();
-  //   try {
-  //     todoList.id = todoListRef.id;
-  //     await todoListRef.set(todoList.toJson());
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+  addAccount({required Account account}) async {
+    final accountRef = _userRef.collection('accounts').doc();
+    try {
+      account.id = accountRef.id;
+      await accountRef.set(account.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   // Future<void> deleteTodoList(TodoList todoList) async {
   //   WriteBatch batch = FirebaseFirestore.instance.batch();
