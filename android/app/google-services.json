@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "835465090941",
+    "project_id": "topaz-b1c50",
+    "storage_bucket": "topaz-b1c50.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835465090941:android:1533e511a1c68ff114de14",
+        "android_client_info": {
+          "package_name": "com.example.topaz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835465090941-f1f54p6qhffkcgdlsich38g675uu6oel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSFtNUYji7n892tR23c7BJTb3G2UPFQig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835465090941-f1f54p6qhffkcgdlsich38g675uu6oel.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "835465090941-fmu96qpgtnvuro3n8joce8tcg9bvonum.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.topaz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:topaz/screens/widgets/account_list_view.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
@@ -18,6 +19,16 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         leading:
             IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              )),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -47,6 +58,26 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const Expanded(child: TransactionListView())
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.indigo,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.attach_money_sharp),
+            label: 'Transaction',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Account',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.white,
+        onTap: (value) {},
       ),
     );
   }
