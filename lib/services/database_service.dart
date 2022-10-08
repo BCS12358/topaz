@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:topaz/models/account/account.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:topaz/models/transaction/transaction.dart' as topaz;
 
 class DatabaseService {
   final String uid;
@@ -24,17 +25,17 @@ class DatabaseService {
         );
   }
 
-  // Stream<List<Reminder>> reminderStream() {
-  //   return _userRef.collection('reminders').snapshots().map(
-  //         (snapshot) => snapshot.docs
-  //             .map(
-  //               (reminderSnapshot) => Reminder.fromJson(
-  //                 reminderSnapshot.data(),
-  //               ),
-  //             )
-  //             .toList(),
-  //       );
-  // }
+  Stream<List<topaz.Transaction>> transactionListStream() {
+    return _userRef.collection('transactions').snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (reminderSnapshot) => topaz.Transaction.fromJson(
+                  reminderSnapshot.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
 
   addAccount({required Account account}) async {
     final accountRef = _userRef.collection('accounts').doc();
@@ -46,43 +47,33 @@ class DatabaseService {
     }
   }
 
-  // Future<void> deleteTodoList(TodoList todoList) async {
-  //   WriteBatch batch = FirebaseFirestore.instance.batch();
+  Future<void> deleteTransaction(topaz.Transaction transaction) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    final transactionRef =
+        _userRef.collection('transactions').doc(transaction.id);
+    batch.delete(transactionRef);
+    try {
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-  //   final todoListRef = _userRef.collection('todo_lists').doc(todoList.id);
+  Future addTransaction({required topaz.Transaction transaction}) async {
+    final transactionRef = _userRef.collection('transactions').doc();
 
-  //   final remindersSnapshot = await _userRef
-  //       .collection('reminders')
-  //       .where('list.id', isEqualTo: todoList.id)
-  //       .get();
+    transaction.id = transactionRef.id;
 
-  //   remindersSnapshot.docs.forEach((reminder) {
-  //     batch.delete(reminder.reference);
-  //   });
-  //   batch.delete(todoListRef);
-  //   try {
-  //     await batch.commit();
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+    WriteBatch batch = _database.batch();
 
-  // Future addReminder({required Reminder reminder}) async {
-  //   final reminderRef = _userRef.collection('reminders').doc();
-  //   reminder.id = reminderRef.id;
-  //   final listRef = _userRef.collection('todo_lists').doc(reminder.list['id']);
+    batch.set(transactionRef, transaction.toJson());
 
-  //   WriteBatch batch = _database.batch();
-  //   batch.set(reminderRef, reminder.toJson());
-  //   batch.update(
-  //       listRef, {'reminder_count': reminder.list['reminder_count'] + 1});
-  //   try {
-  //     await batch.commit();
-  //   } catch (e) {
-  //     print(e);
-  //     rethrow;
-  //   }
-  // }
+    try {
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   // Future<void> deleteReminder(Reminder reminder, TodoList todoList) async {
   //   WriteBatch writeBatch = FirebaseFirestore.instance.batch();

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:topaz/models/account/account.dart';
 import 'package:topaz/models/common/custom_color.dart';
 
 class CustomColorCollection {
@@ -18,4 +19,8 @@ class CustomColorCollection {
   UnmodifiableListView<CustomColor> get colors => UnmodifiableListView(_colors);
 
   CustomColor? findColorById(id) => _colors.firstWhereOrNull((c) => c.id == id);
+
+  CustomColor? findTransactionColorByAccount(Account account) {
+    return findColorById(account.icon['color']);
+  }
 }

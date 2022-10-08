@@ -4,6 +4,7 @@ import 'package:topaz/models/common/custom_icon.dart';
 
 class CustomIconCollection {
   final List<CustomIcon> _icons = [
+    CustomIcon(id: 'home', iconData: CupertinoIcons.home),
     CustomIcon(id: 'star', iconData: CupertinoIcons.star),
     CustomIcon(id: 'book_circle', iconData: CupertinoIcons.book_circle),
     CustomIcon(id: 'airplane', iconData: CupertinoIcons.airplane),

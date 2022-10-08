@@ -1,24 +1,74 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/common/custom_color_collection.dart';
+import 'package:topaz/models/transaction/transaction.dart';
+import 'package:topaz/screens/widgets/dismissible_background.dart';
+import 'package:topaz/services/database_service.dart';
+import 'package:topaz/utils/helpers.dart';
 
+// ignore: use_key_in_widget_constructors, must_be_immutable
 class TransactionListView extends StatelessWidget {
-  const TransactionListView({Key? key}) : super(key: key);
+  Account? selectedAccount;
+
+  // ignore: use_key_in_widget_constructors
+  TransactionListView(this.selectedAccount);
+
+  // ignore: use_key_in_widget_constructors
+  TransactionListView.emptyAccount() : selectedAccount = null;
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+    final transactions = Transaction.getTransactionByAccount(
+        selectedAccount, Provider.of<List<Transaction>>(context));
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: ListView.builder(
-          // physics: const NeverScrollableScrollPhysics(),
-          itemCount: 30,
+          itemCount: transactions.length,
           shrinkWrap: true,
           itemBuilder: ((context, index) {
-            return Card(
-              child: ListTile(
-                onTap: () {},
-                leading: Text(index.toString()),
-                title: Text(index.toString()),
-                trailing: Text(index.toString()),
+            return Dismissible(
+              background: const DismissibleBackground(),
+              key: UniqueKey(),
+              direction: DismissDirection.endToStart,
+              onDismissed: ((direction) async {
+                try {
+                  DatabaseService(uid: user!.uid)
+                      .deleteTransaction(transactions[index]);
+                  showSnackBar(context, "Transaction successfully deleted");
+                } catch (ex) {
+                  print(ex);
+                  showSnackBar(context,
+                      "Ops something went wrong! Transaction colt not be deleted");
+                }
+              }),
+              child: Card(
+                margin: const EdgeInsets.fromLTRB(10, 0, 10, 1),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: ListTile(
+                  onTap: () {},
+                  leading: CircleAvatar(
+                    backgroundColor: CustomColorCollection()
+                        .findTransactionColorByAccount(
+                            Account.fromJson(transactions[index].account))!
+                        .color,
+                    child: Icon(
+                      transactions[index].incoming
+                          ? Icons.arrow_upward
+                          : Icons.arrow_downward,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(transactions[index].title),
+                  subtitle: Text(formatDate(transactions[index].txDate)),
+                  trailing: Text(
+                    transactions[index].totalPrice.toString(),
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
               ),
             );
           })),

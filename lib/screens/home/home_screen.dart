@@ -56,28 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          const Expanded(child: TransactionListView())
+          Expanded(child: TransactionListView.emptyAccount())
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.indigo,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money_sharp),
-            label: 'Transaction',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.white,
-        onTap: (value) {},
       ),
     );
   }

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
 import 'package:topaz/models/common/custom_color_collection.dart';
 import 'package:topaz/models/common/custom_icon_collection.dart';
+import 'package:topaz/models/transaction/transaction.dart';
+import 'package:topaz/screens/account/account_screen.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
 
 class AccountListView extends StatelessWidget {
@@ -94,45 +96,61 @@ class AccountListView extends StatelessWidget {
   }
 
   Widget _buildAccountCard(BuildContext context, Account account) {
-    return Card(
-      elevation: 10,
-      child: SizedBox(
-        height: 180,
-        width: 150,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  // padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                      color: CustomColorCollection()
-                          .findColorById(account.icon['color'])!
-                          .color,
-                      shape: BoxShape.circle),
-                  child: Icon(
-                    CustomIconCollection()
-                        .findCustomItembyId(account.icon['icon'])!
-                        .iconData,
-                    size: 30,
-                    color: Colors.white,
+    final totalTransactions = Transaction.getTotalTransactionByAccount(
+        account, Provider.of<List<Transaction>>(context));
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AccountScreen(
+              selectedAccount: account,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.blueGrey.shade800,
+        elevation: 10,
+        child: SizedBox(
+          height: 180,
+          width: 150,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    // padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                        color: CustomColorCollection()
+                            .findColorById(account.icon['color'])
+                            ?.color,
+                        shape: BoxShape.circle),
+                    child: Icon(
+                      CustomIconCollection()
+                          .findCustomItembyId(account.icon['icon'])
+                          ?.iconData,
+                      size: 30,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Text(
-                '0,00',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              Text(account.name),
-            ],
+                const SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  totalTransactions.toString(),
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                Text(account.name),
+              ],
+            ),
           ),
         ),
       ),
