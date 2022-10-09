@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:topaz/models/account/account.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:topaz/models/transaction/transaction.dart' as topaz;
 
 class DatabaseService {
@@ -75,21 +73,25 @@ class DatabaseService {
     }
   }
 
-  // Future<void> deleteReminder(Reminder reminder, TodoList todoList) async {
-  //   WriteBatch writeBatch = FirebaseFirestore.instance.batch();
+  Future<void> deleteAccount(Account account) async {
+    WriteBatch writeBatch = FirebaseFirestore.instance.batch();
 
-  //   final remindersRef = _userRef.collection('reminders').doc(reminder.id);
+    final accountRef = _userRef.collection('accounts').doc(account.id);
 
-  //   final listRef = _userRef.collection('todo_lists').doc(reminder.list['id']);
+    final transactionsSnapshot = await _userRef
+        .collection('transactions')
+        .where('account.id', isEqualTo: account.id)
+        .get();
 
-  //   writeBatch.delete(remindersRef);
-  //   writeBatch.update(listRef, {'reminder_count': todoList.reminderCount - 1});
+    for (var transaction in transactionsSnapshot.docs) {
+      writeBatch.delete(transaction.reference);
+    }
+    writeBatch.delete(accountRef);
 
-  //   try {
-  //     await writeBatch.commit();
-  //   } catch (e) {
-  //     print(e);
-  //     rethrow;
-  //   }
-  // }
+    try {
+      await writeBatch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

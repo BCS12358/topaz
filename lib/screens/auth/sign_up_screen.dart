@@ -86,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              final user = await AuthService()
+                              await AuthService()
                                   .createUserWithEmailAndPassword(
                                       email: _emailController.text,
                                       password: _passwordController.text);

@@ -89,10 +89,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              final user = await AuthService()
-                                  .signInWithEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text);
+                              AuthService().signInWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text);
                             }
                           },
                           child: const Text('Sign in'),

@@ -13,8 +13,6 @@ class AccountListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accounts = Provider.of<List<Account>>(context);
-    accounts.add(
-        Account(id: null, name: 'dummy', icon: {'color': 'a', 'icon': 'b'}));
     return SizedBox(
       height: 180,
       child: ListView.separated(
@@ -22,11 +20,7 @@ class AccountListView extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         itemCount: accounts.isEmpty ? 1 : accounts.length,
         itemBuilder: ((context, index) {
-          if (accounts.isEmpty) {
-            return _buildAddNewAccountCard(context);
-          }
-
-          if (index == accounts.length - 1) {
+          if (accounts.isEmpty || index == 0) {
             return _buildAddNewAccountCard(context);
           }
 
@@ -54,6 +48,7 @@ class AccountListView extends StatelessWidget {
       },
       child: Card(
         elevation: 10,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SizedBox(
           height: 180,
           width: 150,
@@ -69,7 +64,7 @@ class AccountListView extends StatelessWidget {
                     width: 50,
                     height: 50,
                     decoration: const BoxDecoration(
-                        color: Colors.grey, shape: BoxShape.circle),
+                        color: Colors.blueGrey, shape: BoxShape.circle),
                     child: const Icon(
                       Icons.add,
                       size: 40,

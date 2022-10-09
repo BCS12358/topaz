@@ -12,6 +12,7 @@ class AuthService {
     } on FirebaseAuthException catch (ex) {
       // ignore: avoid_print
       print(ex.message);
+      return null;
     }
   }
 
@@ -24,6 +25,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       // ignore: avoid_print
       print(e.message);
+      return null;
     }
   }
 }

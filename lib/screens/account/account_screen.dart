@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
@@ -6,6 +7,8 @@ import 'package:topaz/models/common/custom_icon_collection.dart';
 import 'package:topaz/models/transaction/transaction.dart';
 import 'package:topaz/screens/transaction/add_transaction_screen.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
+import 'package:topaz/services/database_service.dart';
+import 'package:topaz/utils/helpers.dart';
 
 class AccountScreen extends StatefulWidget {
   static String routeName = '/account';
@@ -22,8 +25,10 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+    final allTransactions = Provider.of<List<Transaction>>(context);
     final totalTransactions = Transaction.getTotalTransactionByAccount(
-        widget.selectedAccount, Provider.of<List<Transaction>>(context));
+        widget.selectedAccount, allTransactions);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,21 +48,39 @@ class _AccountScreenState extends State<AccountScreen> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
-                    flex: 4,
-                    child: PageView.builder(
-                      itemCount: 3,
-                      itemBuilder: (context, index) =>
-                          Card(color: Colors.blueGrey.shade800),
-                    ),
-                  ),
-                  Expanded(
                     flex: 2,
                     child: Card(
                       color: Colors.blueGrey.shade800,
                       child: Column(
                         children: [
-                          const SizedBox(
-                            height: 20,
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: (() {
+                                    try {
+                                      DatabaseService(uid: user!.uid)
+                                          .deleteAccount(
+                                              widget.selectedAccount);
+                                      Navigator.pop(context);
+                                      showSnackBar(context,
+                                          'Account successfully deleted');
+                                    } catch (err) {
+                                      // ignore: avoid_print
+                                      print(err);
+                                    }
+                                  }),
+                                  icon: const Icon(
+                                    Icons.highlight_remove_sharp,
+                                    color: Colors.grey,
+                                  ),
+                                  tooltip: 'Remove',
+                                )
+                              ],
+                            ),
                           ),
                           Container(
                             height: 50,
@@ -74,21 +97,32 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ?.iconData),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
                           Text(
                             widget.selectedAccount.name,
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           const SizedBox(
-                            height: 30,
+                            height: 5,
                           ),
                           Text(
                             totalTransactions.toString(),
                             style: Theme.of(context).textTheme.headline5,
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                         ],
                       ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: PageView.builder(
+                      itemCount: 3,
+                      itemBuilder: (context, index) =>
+                          Card(color: Colors.blueGrey.shade800),
                     ),
                   ),
                 ],

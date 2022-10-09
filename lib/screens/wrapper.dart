@@ -22,12 +22,12 @@ class Wrapper extends StatelessWidget {
     return MultiProvider(
       providers: [
         StreamProvider<List<Account>>.value(
-            initialData: [],
+            initialData: const [],
             value: user != null
                 ? DatabaseService(uid: user.uid).accountListStream()
                 : null),
         StreamProvider<List<topaz.Transaction>>.value(
-            initialData: [],
+            initialData: const [],
             value: user != null
                 ? DatabaseService(uid: user.uid).transactionListStream()
                 : null)
