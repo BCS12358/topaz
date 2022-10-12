@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/account/accountUtils.dart';
 import 'package:topaz/models/common/custom_color_collection.dart';
 import 'package:topaz/models/common/custom_icon_collection.dart';
 import 'package:topaz/models/transaction/transaction.dart';
 import 'package:topaz/screens/transaction/add_transaction_screen.dart';
+import 'package:topaz/screens/widgets/account_details.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
 import 'package:topaz/services/database_service.dart';
 import 'package:topaz/utils/helpers.dart';
@@ -30,6 +32,9 @@ class _AccountScreenState extends State<AccountScreen> {
     final totalTransactions = Transaction.getTotalTransactionByAccount(
         widget.selectedAccount, allTransactions);
 
+    final hasTransactions = AccountUtils.hasTransactions(
+        transactions: allTransactions, selectedAccount: widget.selectedAccount);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accounts'),
@@ -38,97 +43,98 @@ class _AccountScreenState extends State<AccountScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Card(
-                      color: Colors.blueGrey.shade800,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+          hasTransactions
+              ? Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Card(
+                            color: Colors.blueGrey.shade800,
+                            child: Column(
                               children: [
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: (() {
-                                    try {
-                                      DatabaseService(uid: user!.uid)
-                                          .deleteAccount(
-                                              widget.selectedAccount);
-                                      Navigator.pop(context);
-                                      showSnackBar(context,
-                                          'Account successfully deleted');
-                                    } catch (err) {
-                                      // ignore: avoid_print
-                                      print(err);
-                                    }
-                                  }),
-                                  icon: const Icon(
-                                    Icons.highlight_remove_sharp,
-                                    color: Colors.grey,
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: (() {
+                                          try {
+                                            DatabaseService(uid: user!.uid)
+                                                .deleteAccount(
+                                                    widget.selectedAccount);
+                                            Navigator.pop(context);
+                                            showSnackBar(context,
+                                                'Account successfully deleted');
+                                          } catch (err) {
+                                            // ignore: avoid_print
+                                            print(err);
+                                          }
+                                        }),
+                                        icon: const Icon(
+                                          Icons.highlight_remove_sharp,
+                                          color: Colors.grey,
+                                        ),
+                                        tooltip: 'Remove',
+                                      )
+                                    ],
                                   ),
-                                  tooltip: 'Remove',
-                                )
+                                ),
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: CustomColorCollection()
+                                          .findColorById(widget
+                                              .selectedAccount.icon['color'])
+                                          ?.color),
+                                  child: Icon(CustomIconCollection()
+                                      .findCustomItembyId(
+                                          widget.selectedAccount.icon['icon'])
+                                      ?.iconData),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  widget.selectedAccount.name,
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  totalTransactions.toString(),
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
                           ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: CustomColorCollection()
-                                    .findColorById(
-                                        widget.selectedAccount.icon['color'])
-                                    ?.color),
-                            child: Icon(CustomIconCollection()
-                                .findCustomItembyId(
-                                    widget.selectedAccount.icon['icon'])
-                                ?.iconData),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: AccountDetails(
+                            selectedAccount: widget.selectedAccount,
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            widget.selectedAccount.name,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            totalTransactions.toString(),
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    flex: 4,
-                    child: PageView.builder(
-                      itemCount: 3,
-                      itemBuilder: (context, index) =>
-                          Card(color: Colors.blueGrey.shade800),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                )
+              : const Center(child: Text('')),
           Expanded(
             flex: 4,
             child: SingleChildScrollView(

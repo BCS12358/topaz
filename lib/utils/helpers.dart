@@ -24,3 +24,7 @@ void showSnackBar(BuildContext context, String message) {
 
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
+String formatNumberAsMoney(num total) {
+  return NumberFormat('#,##0.00').format(total);
+}

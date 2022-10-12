@@ -18,7 +18,7 @@ class CustomTheme extends ChangeNotifier {
 
   ThemeData darkTheme = ThemeData(
     scaffoldBackgroundColor: Colors.blueGrey.shade900,
-    appBarTheme: const AppBarTheme(color: Colors.indigo),
+    appBarTheme: AppBarTheme(color: Colors.blueGrey.shade900),
     brightness: Brightness.dark,
     iconTheme: const IconThemeData(color: Colors.white),
     textButtonTheme: TextButtonThemeData(

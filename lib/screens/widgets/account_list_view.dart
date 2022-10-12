@@ -6,6 +6,7 @@ import 'package:topaz/models/common/custom_icon_collection.dart';
 import 'package:topaz/models/transaction/transaction.dart';
 import 'package:topaz/screens/account/account_screen.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
+import 'package:topaz/utils/helpers.dart';
 
 class AccountListView extends StatelessWidget {
   const AccountListView({Key? key}) : super(key: key);
@@ -49,7 +50,11 @@ class AccountListView extends StatelessWidget {
       child: Card(
         elevation: 10,
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 1.0),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           height: 180,
           width: 150,
           child: Padding(
@@ -108,7 +113,11 @@ class AccountListView extends StatelessWidget {
       child: Card(
         color: Colors.blueGrey.shade800,
         elevation: 10,
-        child: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 1.0),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           height: 180,
           width: 150,
           child: Padding(
@@ -140,7 +149,7 @@ class AccountListView extends StatelessWidget {
                   height: 40,
                 ),
                 Text(
-                  totalTransactions.toString(),
+                  formatNumberAsMoney(totalTransactions),
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 Text(account.name),

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,22 +52,44 @@ class TransactionListView extends StatelessWidget {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: ListTile(
                   onTap: () {},
-                  leading: CircleAvatar(
-                    backgroundColor: CustomColorCollection()
-                        .findTransactionColorByAccount(
-                            Account.fromJson(transactions[index].account))!
-                        .color,
-                    child: Icon(
-                      transactions[index].incoming
-                          ? Icons.arrow_upward
-                          : Icons.arrow_downward,
-                      color: Colors.white,
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(50.0)),
+                      border: Border.all(
+                        color: CustomColorCollection()
+                            .findTransactionColorByAccount(
+                                Account.fromJson(transactions[index].account))!
+                            .color,
+                        width: 2,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      // backgroundColor: Colors.black,
+                      child: Icon(
+                        transactions[index].incoming
+                            ? Icons.arrow_upward
+                            : Icons.arrow_downward,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  title: Text(transactions[index].title),
+                  title: Row(
+                    children: [
+                      Text(
+                        transactions[index].title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                   subtitle: Text(formatDate(transactions[index].txDate)),
                   trailing: Text(
-                    transactions[index].totalPrice.toString(),
+                    formatNumberAsMoney(transactions[index].totalPrice),
                     style: Theme.of(context).textTheme.headline5,
                   ),
                 ),
