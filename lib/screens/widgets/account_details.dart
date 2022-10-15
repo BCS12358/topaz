@@ -13,7 +13,11 @@ class AccountDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final transactions = Provider.of<List<Transaction>>(context);
+    final allTransactions = Provider.of<List<Transaction>>(context);
+    final selectedAccountTransactions = allTransactions
+        .where((tx) => tx.account['id'] == selectedAccount.id)
+        .toList();
+
     return PageView.builder(
       // itemCount: 3,
       itemCount: 1,
@@ -47,16 +51,14 @@ class AccountDetails extends StatelessWidget {
                     selectedAccount: selectedAccount,
                     description: 'Incoming',
                     total: AccountUtils.totalIncoming(
-                        transactions: transactions,
-                        selectedAccount: selectedAccount),
+                        transactions: selectedAccountTransactions),
                     icon: Icons.arrow_upward,
                   ),
                   AccountDetailWidget(
                     selectedAccount: selectedAccount,
                     description: 'Outgoing',
                     total: AccountUtils.totalOutgoing(
-                        transactions: transactions,
-                        selectedAccount: selectedAccount),
+                        transactions: selectedAccountTransactions),
                     icon: Icons.arrow_downward,
                   ),
                   // AccountDetailWidget(
@@ -69,16 +71,14 @@ class AccountDetails extends StatelessWidget {
                     selectedAccount: selectedAccount,
                     description: 'Highest',
                     total: AccountUtils.getHighest(
-                        transactions: transactions,
-                        selectedAccount: selectedAccount),
+                        transactions: selectedAccountTransactions),
                     icon: Icons.circle,
                   ),
                   AccountDetailWidget(
                     selectedAccount: selectedAccount,
                     description: 'Lowest',
                     total: AccountUtils.getLowest(
-                        transactions: transactions,
-                        selectedAccount: selectedAccount),
+                        transactions: selectedAccountTransactions),
                     icon: Icons.circle_outlined,
                   ),
                 ],

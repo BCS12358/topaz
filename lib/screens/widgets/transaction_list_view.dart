@@ -36,7 +36,7 @@ class TransactionListView extends StatelessWidget {
               background: const DismissibleBackground(),
               key: UniqueKey(),
               direction: DismissDirection.endToStart,
-              onDismissed: ((direction) async {
+              onDismissed: ((direction) {
                 try {
                   DatabaseService(uid: user!.uid)
                       .deleteTransaction(transactions[index]);

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:topaz/screens/widgets/account_list_view.dart';
+import 'package:topaz/screens/widgets/notification_icon.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,8 +18,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:
-            IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
+        leading: const NotificationIcon(
+          iconData: Icons.notifications,
+          size: 15,
+          number: 4,
+        ),
         actions: [
           IconButton(
               onPressed: () {

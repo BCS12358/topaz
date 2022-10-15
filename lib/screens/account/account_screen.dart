@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,9 +34,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final totalTransactions = Transaction.getTotalTransactionByAccount(
         widget.selectedAccount, allTransactions);
 
-    final hasTransactions = AccountUtils.hasTransactions(
-        transactions: allTransactions, selectedAccount: widget.selectedAccount);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accounts'),
@@ -43,98 +42,99 @@ class _AccountScreenState extends State<AccountScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          hasTransactions
-              ? Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Card(
-                            color: Colors.blueGrey.shade800,
-                            child: Column(
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Card(
+                      color: Colors.blueGrey.shade800,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      IconButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: (() {
-                                          try {
-                                            DatabaseService(uid: user!.uid)
-                                                .deleteAccount(
-                                                    widget.selectedAccount);
-                                            Navigator.pop(context);
-                                            showSnackBar(context,
-                                                'Account successfully deleted');
-                                          } catch (err) {
-                                            // ignore: avoid_print
-                                            print(err);
-                                          }
-                                        }),
-                                        icon: const Icon(
-                                          Icons.highlight_remove_sharp,
-                                          color: Colors.grey,
-                                        ),
-                                        tooltip: 'Remove',
-                                      )
-                                    ],
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: (() async {
+                                    final canRemove =
+                                        await removeAlertDialog(context);
+                                    if (canRemove) {
+                                      try {
+                                        DatabaseService(uid: user!.uid)
+                                            .deleteAccount(
+                                                widget.selectedAccount);
+                                        Navigator.of(context).pop();
+                                        showSnackBar(context,
+                                            'Account successfully deleted');
+                                      } catch (err) {
+                                        // ignore: avoid_print
+                                        print(err);
+                                      }
+                                    }
+                                  }),
+                                  icon: const Icon(
+                                    Icons.highlight_remove_sharp,
+                                    color: Colors.grey,
                                   ),
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: CustomColorCollection()
-                                          .findColorById(widget
-                                              .selectedAccount.icon['color'])
-                                          ?.color),
-                                  child: Icon(CustomIconCollection()
-                                      .findCustomItembyId(
-                                          widget.selectedAccount.icon['icon'])
-                                      ?.iconData),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  widget.selectedAccount.name,
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  totalTransactions.toString(),
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
+                                  tooltip: 'Remove',
+                                )
                               ],
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: AccountDetails(
-                            selectedAccount: widget.selectedAccount,
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: CustomColorCollection()
+                                    .findColorById(
+                                        widget.selectedAccount.icon['color'])
+                                    ?.color),
+                            child: Icon(CustomIconCollection()
+                                .findCustomItembyId(
+                                    widget.selectedAccount.icon['icon'])
+                                ?.iconData),
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            widget.selectedAccount.name,
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            totalTransactions.toString(),
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                )
-              : const Center(child: Text('')),
+                  Expanded(
+                    flex: 4,
+                    child: AccountDetails(
+                      selectedAccount: widget.selectedAccount,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Expanded(
             flex: 4,
             child: SingleChildScrollView(
