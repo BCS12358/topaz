@@ -60,7 +60,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Please enter a name for the transaction';
                       }
                       return null;
                     },
@@ -79,7 +79,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     keyboardType: TextInputType.number,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Please enter a price for the transaction';
                       }
                       return null;
                     },
@@ -102,7 +102,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     keyboardType: TextInputType.number,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return 'Please enter an amount for the transaction';
                       }
                       return null;
                     },

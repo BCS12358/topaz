@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:topaz/screens/message/message_screen.dart';
 import 'package:topaz/screens/widgets/account_list_view.dart';
 import 'package:topaz/screens/widgets/notification_icon.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
+
+import '../../models/message/message.dart';
 
 class HomeScreen extends StatefulWidget {
   static String routeName = '/home';
@@ -16,12 +20,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final mesages = Provider.of<List<Message>>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: const NotificationIcon(
-          iconData: Icons.notifications,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        leading: NotificationIcon(
+          iconData: Icons.email_outlined,
           size: 15,
-          number: 4,
+          number: mesages.length,
         ),
         actions: [
           IconButton(
@@ -29,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 FirebaseAuth.instance.signOut();
               },
               icon: const Icon(
-                Icons.logout,
+                Icons.settings,
                 color: Colors.white,
               )),
         ],
@@ -63,6 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(child: TransactionListView.emptyAccount())
         ],
       ),
+      drawer: const Drawer(
+        child: MessageScreen(),
+      ),
+      endDrawer: const Drawer(),
     );
   }
 }

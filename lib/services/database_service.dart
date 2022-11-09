@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/config/configuration.dart';
+import 'package:topaz/models/message/message.dart';
 import 'package:topaz/models/transaction/transaction.dart' as topaz;
 
 class DatabaseService {
@@ -90,6 +92,28 @@ class DatabaseService {
 
     try {
       await writeBatch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Stream<List<Message>> messagetListStream() {
+    return _userRef.collection('messages').snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (messageListSnapshot) => Message.fromJson(
+                  messageListSnapshot.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  addConfiguration({required Configuration configuration}) async {
+    final accountRef = _userRef.collection('configuration').doc();
+    try {
+      configuration.id = configuration.id;
+      await accountRef.set(configuration.toJson());
     } catch (e) {
       rethrow;
     }

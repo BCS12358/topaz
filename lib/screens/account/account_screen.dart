@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
-import 'package:topaz/models/account/accountUtils.dart';
 import 'package:topaz/models/common/custom_color_collection.dart';
 import 'package:topaz/models/common/custom_icon_collection.dart';
 import 'package:topaz/models/transaction/transaction.dart';
@@ -45,7 +45,10 @@ class _AccountScreenState extends State<AccountScreen> {
           Expanded(
             flex: 2,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              // padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,40 +147,44 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddTransactionScreen(
-                selectedAccount: widget.selectedAccount,
-              ),
-              fullscreenDialog: true,
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 10,
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              CupertinoIcons.arrow_up_arrow_down,
+              size: 30,
+              color: CustomColorCollection()
+                  .findColorById(widget.selectedAccount.icon['color'])
+                  ?.color,
             ),
-          );
+            label: 'New Transaction',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.filter_alt_rounded),
+            label: 'Filter',
+          ),
+        ],
+        currentIndex: 1,
+        selectedItemColor: Colors.white,
+        onTap: (value) {
+          if (value == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTransactionScreen(
+                  selectedAccount: widget.selectedAccount,
+                ),
+                fullscreenDialog: true,
+              ),
+            );
+          }
         },
-        child: const Icon(Icons.add),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor: Colors.indigo,
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.attach_money_sharp),
-      //       label: 'Transaction',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Account',
-      //     ),
-      //   ],
-      //   currentIndex: 1,
-      //   selectedItemColor: Colors.white,
-      //   onTap: (value) {},
-      // ),
     );
   }
 }

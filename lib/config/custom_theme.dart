@@ -18,15 +18,17 @@ class CustomTheme extends ChangeNotifier {
 
   ThemeData darkTheme = ThemeData(
     scaffoldBackgroundColor: Colors.blueGrey.shade900,
-    appBarTheme: AppBarTheme(color: Colors.blueGrey.shade900),
+    appBarTheme: AppBarTheme(color: Colors.blueGrey.shade800),
     brightness: Brightness.dark,
     iconTheme: const IconThemeData(color: Colors.white),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        primary: Colors.blueAccent,
+        // primary: ,
         textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
     ),
+    bottomNavigationBarTheme:
+        BottomNavigationBarThemeData(backgroundColor: Colors.blueGrey.shade800),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
     ),

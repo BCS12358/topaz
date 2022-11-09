@@ -25,8 +25,11 @@ class NotificationIcon extends StatelessWidget {
         number.toString(),
         style: TextStyle(color: color),
       ),
-      child:
-          IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
+      child: IconButton(
+          icon: Icon(iconData),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          }),
     );
   }
 }

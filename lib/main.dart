@@ -1,12 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/config/custom_theme.dart';
 import 'package:topaz/screens/wrapper.dart';
+import 'package:topaz/services/fcm_notification_service.dart';
 
-void main() {
+FCMNotificationService fcmNotificationService = FCMNotificationService();
+
+//todo: how to save messages when received on bg
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification!.body}');
+}
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await fcmNotificationService.initialize();
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   runApp(const MyApp());
 }
 
@@ -42,7 +54,8 @@ class _MyAppState extends State<MyApp> {
                 initialData: FirebaseAuth.instance.currentUser,
                 child: const Wrapper(),
               ),
-              ChangeNotifierProvider(create: (context) => CustomTheme())
+              ChangeNotifierProvider<CustomTheme>(
+                  create: (context) => CustomTheme()),
             ],
             child: const Wrapper(),
           );

@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:topaz/config/custom_theme.dart';
 import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/message/message.dart';
 import 'package:topaz/screens/account/account_screen.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
 import 'package:topaz/screens/auth/authenticate_screen.dart';
 import 'package:topaz/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:topaz/screens/transaction/add_transaction_screen.dart';
 import 'package:topaz/services/database_service.dart';
 import 'package:topaz/models/transaction/transaction.dart' as topaz;
 
@@ -18,7 +18,6 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
     final customTheme = Provider.of<CustomTheme>(context);
-
     return MultiProvider(
       providers: [
         StreamProvider<List<Account>>.value(
@@ -30,7 +29,12 @@ class Wrapper extends StatelessWidget {
             initialData: const [],
             value: user != null
                 ? DatabaseService(uid: user.uid).transactionListStream()
-                : null)
+                : null),
+        StreamProvider<List<Message>>.value(
+            initialData: const [],
+            value: user != null
+                ? DatabaseService(uid: user.uid).messagetListStream()
+                : null),
       ],
       child: MaterialApp(
         title: 'Topaz',
@@ -40,8 +44,6 @@ class Wrapper extends StatelessWidget {
           AddAccountScreen.routeName: ((context) => const AddAccountScreen()),
           AccountScreen.routeName: (context) => AccountScreen(
               selectedAccount: Provider.of<List<Account>>(context).first),
-          AddTransactionScreen.routeName: (context) => AddTransactionScreen(
-              selectedAccount: Provider.of<List<Account>>(context).first)
         },
         home: user != null ? const HomeScreen() : const AuthenticateScreen(),
         theme: customTheme.darkTheme,
