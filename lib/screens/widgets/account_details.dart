@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
 import 'package:topaz/models/account/accountUtils.dart';
-import 'package:topaz/models/common/custom_color_collection.dart';
 import 'package:topaz/models/transaction/transaction.dart';
 import 'package:topaz/utils/helpers.dart';
 
@@ -18,73 +17,69 @@ class AccountDetails extends StatelessWidget {
         .where((tx) => tx.account['id'] == selectedAccount.id)
         .toList();
 
-    return PageView.builder(
-      // itemCount: 3,
-      itemCount: 1,
-      itemBuilder: (context, index) => Card(
-        color: Colors.blueGrey.shade800,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: Colors.blueGrey.shade800,
-                child: Center(
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor),
-                      child: _buildCardTitleDetails(index, context)),
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      child: PageView.builder(
+        itemCount: 1,
+        itemBuilder: (context, index) => Card(
+          color: Colors.blueGrey.shade800,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: Colors.blueGrey.shade800,
+                  child: Center(
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        child: _buildCardTitleDetails(index, context)),
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AccountDetailWidget(
-                    selectedAccount: selectedAccount,
-                    description: 'Incoming',
-                    total: AccountUtils.totalIncoming(
-                        transactions: selectedAccountTransactions),
-                    icon: Icons.arrow_upward,
-                  ),
-                  AccountDetailWidget(
-                    selectedAccount: selectedAccount,
-                    description: 'Outgoing',
-                    total: AccountUtils.totalOutgoing(
-                        transactions: selectedAccountTransactions),
-                    icon: Icons.arrow_downward,
-                  ),
-                  // AccountDetailWidget(
-                  //   selectedAccount: selectedAccount,
-                  //   description: 'Median',
-                  //   total: '33%',
-                  //   icon: Icons.bar_chart_outlined,
-                  // ),
-                  AccountDetailWidget(
-                    selectedAccount: selectedAccount,
-                    description: 'Highest',
-                    total: AccountUtils.getHighest(
-                        transactions: selectedAccountTransactions),
-                    icon: Icons.circle,
-                  ),
-                  AccountDetailWidget(
-                    selectedAccount: selectedAccount,
-                    description: 'Lowest',
-                    total: AccountUtils.getLowest(
-                        transactions: selectedAccountTransactions),
-                    icon: Icons.circle_outlined,
-                  ),
-                ],
+              Expanded(
+                flex: 7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AccountDetailWidget(
+                      selectedAccount: selectedAccount,
+                      description: 'Incoming',
+                      total: AccountUtils.totalIncoming(
+                          transactions: selectedAccountTransactions),
+                      icon: Icons.arrow_upward,
+                    ),
+                    AccountDetailWidget(
+                      selectedAccount: selectedAccount,
+                      description: 'Outgoing',
+                      total: AccountUtils.totalOutgoing(
+                          transactions: selectedAccountTransactions),
+                      icon: Icons.arrow_downward,
+                    ),
+                    AccountDetailWidget(
+                      selectedAccount: selectedAccount,
+                      description: 'Highest',
+                      total: AccountUtils.getHighest(
+                          transactions: selectedAccountTransactions),
+                      icon: Icons.circle,
+                    ),
+                    AccountDetailWidget(
+                      selectedAccount: selectedAccount,
+                      description: 'Lowest',
+                      total: AccountUtils.getLowest(
+                          transactions: selectedAccountTransactions),
+                      icon: Icons.circle_outlined,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -141,12 +136,7 @@ class AccountDetailWidget extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: CustomColorCollection()
-                      .findTransactionColorByAccount(selectedAccount)!
-                      .color,
-                  width: 3,
-                ),
+                color: Colors.blueGrey.shade900,
               ),
               child: Icon(
                 size: 16.0,

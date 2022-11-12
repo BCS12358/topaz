@@ -45,14 +45,12 @@ class _AccountScreenState extends State<AccountScreen> {
           Expanded(
             flex: 2,
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              // padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              margin: const EdgeInsets.only(left: 8),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 2,

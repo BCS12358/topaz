@@ -121,12 +121,15 @@ class DatabaseService {
   }
 
   addConfiguration({required Configuration configuration}) async {
-    final accountRef = _userRef.collection('configuration').doc();
-    try {
-      configuration.id = configuration.id;
-      await accountRef.set(configuration.toJson());
-    } catch (e) {
-      rethrow;
-    }
+    final configurationRef = _userRef.collection('configuration').doc(uid);
+    configuration.id = configurationRef.id;
+    configurationRef.get().then(
+          (docSnapshot) async => {
+            if (docSnapshot.exists)
+              {await configurationRef.update(configuration.toJson())}
+            else
+              {await configurationRef.set(configuration.toJson())}
+          },
+        );
   }
 }
