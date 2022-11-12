@@ -109,6 +109,17 @@ class DatabaseService {
         );
   }
 
+  Future<void> deleteMessage(Message message) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    final messageRef = _userRef.collection('messages').doc(message.id);
+    batch.delete(messageRef);
+    try {
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   addConfiguration({required Configuration configuration}) async {
     final accountRef = _userRef.collection('configuration').doc();
     try {

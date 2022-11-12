@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Message {
   String? id;
   final String title;

@@ -20,14 +20,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final mesages = Provider.of<List<Message>>(context);
+    final messages = Provider.of<List<Message>>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: NotificationIcon(
           iconData: Icons.email_outlined,
           size: 15,
-          number: mesages.length,
+          number: messages.length,
         ),
         actions: [
           IconButton(
@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: MessageScreen(),
       ),
       endDrawer: const Drawer(),
+      // onEndDrawerChanged: ((isOpened) {}),
     );
   }
 }

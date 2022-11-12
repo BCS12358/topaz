@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/message/message.dart';
 import 'package:topaz/screens/widgets/dismissible_background.dart';
+import 'package:topaz/services/database_service.dart';
+import 'package:topaz/utils/helpers.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({Key? key}) : super(key: key);
@@ -19,8 +22,14 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final mesages = Provider.of<List<Message>>(context);
+    final messages = Provider.of<List<Message>>(context);
+    final user = Provider.of<User?>(context);
     return Container(
       color: Colors.blueGrey.shade900,
       child: Column(
@@ -46,23 +55,24 @@ class _MessageScreenState extends State<MessageScreen> {
             flex: 5,
             child: SingleChildScrollView(
               child: ListView.builder(
-                itemCount: 30,
+                itemCount: messages.length,
                 shrinkWrap: true,
                 itemBuilder: ((context, index) {
                   return Dismissible(
                     background: const DismissibleBackground(),
                     key: UniqueKey(),
                     direction: DismissDirection.endToStart,
-                    onDismissed: ((direction) {
-                      // try {
-                      //   DatabaseService(uid: user!.uid)
-                      //       .deleteTransaction(transactions[index]);
-                      //   showSnackBar(context, "Transaction successfully deleted");
-                      // } catch (ex) {
-                      //   print(ex);
-                      //   showSnackBar(context,
-                      //       "Ops something went wrong! Transaction colt not be deleted");
-                      // }
+                    onDismissed: ((direction) async {
+                      try {
+                        await DatabaseService(uid: user!.uid)
+                            .deleteMessage(messages[index]);
+                        // ignore: use_build_context_synchronously
+                        showSnackBar(context, "Message successfully deleted");
+                      } catch (ex) {
+                        print(ex);
+                        showSnackBar(context,
+                            "Ops something went wrong! Message could not be deleted");
+                      }
                     }),
                     child: Container(
                       decoration: BoxDecoration(
@@ -88,7 +98,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                   Expanded(
                                       flex: 1,
                                       child: Text(
-                                        'Highest expanse',
+                                        messages[index].title,
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold,
@@ -97,7 +107,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                   Expanded(
                                       flex: 3,
                                       child: Text(
-                                        'Your highest account asda bla bla bla bla bla bla bla.',
+                                        messages[index].body,
                                       )),
                                   Expanded(
                                       flex: 1,
