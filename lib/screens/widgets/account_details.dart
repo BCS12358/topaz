@@ -33,10 +33,7 @@ class AccountDetails extends StatelessWidget {
                 child: Container(
                   color: Colors.blueGrey.shade800,
                   child: Center(
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor),
-                        child: _buildCardTitleDetails(index, context)),
+                    child: Container(child: _buildCardTitleDetails(1, context)),
                   ),
                 ),
               ),
@@ -49,31 +46,35 @@ class AccountDetails extends StatelessWidget {
                   children: [
                     AccountDetailWidget(
                       selectedAccount: selectedAccount,
-                      description: 'Incoming',
+                      description: 'Sell',
                       total: AccountUtils.totalIncoming(
                           transactions: selectedAccountTransactions),
                       icon: Icons.arrow_upward,
+                      formatAsMoney: true,
                     ),
                     AccountDetailWidget(
                       selectedAccount: selectedAccount,
-                      description: 'Outgoing',
+                      description: 'Buy',
                       total: AccountUtils.totalOutgoing(
                           transactions: selectedAccountTransactions),
                       icon: Icons.arrow_downward,
+                      formatAsMoney: true,
                     ),
                     AccountDetailWidget(
                       selectedAccount: selectedAccount,
-                      description: 'Highest',
-                      total: AccountUtils.getHighest(
+                      description: 'No. Sell',
+                      total: AccountUtils.getNumberSales(
                           transactions: selectedAccountTransactions),
                       icon: Icons.circle,
+                      formatAsMoney: false,
                     ),
                     AccountDetailWidget(
                       selectedAccount: selectedAccount,
-                      description: 'Lowest',
-                      total: AccountUtils.getLowest(
+                      description: 'No. Buy',
+                      total: AccountUtils.getNumberPurchase(
                           transactions: selectedAccountTransactions),
                       icon: Icons.circle_outlined,
+                      formatAsMoney: false,
                     ),
                   ],
                 ),
@@ -87,22 +88,18 @@ class AccountDetails extends StatelessWidget {
 
   Text _buildCardTitleDetails(int index, BuildContext context) {
     if (index == 1) {
-      return Text(
-        'Weekly',
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
+      return Text('Weekly', style: _cardDetailsTitleStyle());
     }
     if (index == 2) {
-      return Text(
-        'Monthly',
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
+      return Text('Monthly', style: _cardDetailsTitleStyle());
     }
-    return Text(
-      'All',
-      style: Theme.of(context).textTheme.bodyLarge,
-    );
+    return Text('Annual', style: _cardDetailsTitleStyle());
   }
+}
+
+TextStyle _cardDetailsTitleStyle() {
+  return const TextStyle(
+      fontSize: 20, color: Colors.amber, fontWeight: FontWeight.bold);
 }
 
 class AccountDetailWidget extends StatelessWidget {
@@ -112,12 +109,14 @@ class AccountDetailWidget extends StatelessWidget {
     required this.icon,
     required this.description,
     required this.total,
+    required this.formatAsMoney,
   }) : super(key: key);
 
   final Account selectedAccount;
   final IconData icon;
   final String description;
   final num total;
+  final bool formatAsMoney;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +157,7 @@ class AccountDetailWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              formatNumberAsMoney(total),
+              formatAsMoney ? formatNumberAsMoney(total) : total.toString(),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),

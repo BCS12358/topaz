@@ -24,7 +24,7 @@ class TransactionListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
-    final transactions = Transaction.getTransactionByAccount(
+    final List<Transaction> transactions = Transaction.getTransactionByAccount(
         selectedAccount, Provider.of<List<Transaction>>(context));
 
     return Container(
@@ -106,7 +106,7 @@ class TransactionListView extends StatelessWidget {
                     ],
                   ),
                   subtitle: Container(
-                      margin: EdgeInsets.only(top: 10),
+                      margin: const EdgeInsets.only(top: 10),
                       child: Text(formatDate(transactions[index].txDate))),
                   trailing: Text(
                     formatNumberAsMoney(transactions[index].totalPrice),

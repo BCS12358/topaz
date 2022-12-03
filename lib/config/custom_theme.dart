@@ -28,7 +28,7 @@ class CustomTheme extends ChangeNotifier {
       ),
     ),
     bottomNavigationBarTheme:
-        BottomNavigationBarThemeData(backgroundColor: Colors.blueGrey.shade800),
+        BottomNavigationBarThemeData(backgroundColor: Colors.blue.shade800),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
     ),

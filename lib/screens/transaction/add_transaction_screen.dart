@@ -1,8 +1,10 @@
+// ignore_for_file: prefer_null_aware_operators
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/client/client.dart';
 import 'package:topaz/models/transaction/transaction.dart';
 import 'package:topaz/services/database_service.dart';
 
@@ -25,6 +27,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   int _qtd = 0;
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  Client? _client;
 
   @override
   void initState() {
@@ -33,6 +36,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Client> clients = Provider.of<List<Client>>(context);
+    List<DropdownMenuItem<Client>> clientDropdownList =
+        _getClientDropdownMenuItem(clients);
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Transaction'),
@@ -89,9 +95,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
                   TextFormField(
                     decoration: InputDecoration(
                       label: Text(
@@ -108,6 +111,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     },
                     onChanged: ((value) =>
                         setState(() => _qtd = int.parse(value))),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Client',
+                    ),
+                    items: clientDropdownList,
+                    value: clientDropdownList.first.value,
+                    onChanged: (client) {
+                      final newClient = client as Client;
+                      if (newClient.id != null) {
+                        _client = newClient;
+                      }
+                    },
                   ),
                   const SizedBox(
                     height: 10,
@@ -139,20 +158,24 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         },
                         leading: Text(
                           'Date',
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.calendar_month),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(DateFormat.yMMMEd()
-                                .format(_selectedDate)
-                                .toString()),
-                            const Icon(Icons.arrow_forward),
-                          ],
+                        trailing: SizedBox(
+                          width: 300,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Expanded(child: Icon(Icons.calendar_month)),
+                              Expanded(
+                                flex: 2,
+                                child: Text(DateFormat.yMMMEd()
+                                    .format(_selectedDate)
+                                    .toString()),
+                              ),
+                              const Expanded(child: Icon(Icons.arrow_forward)),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -178,20 +201,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       },
                       leading: Text(
                         'Time',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.watch_later_outlined,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(_selectedTime.format(context).toString()),
-                          const Icon(Icons.arrow_forward),
-                        ],
+                      trailing: SizedBox(
+                        width:
+                            300, //todo: what if beeing used in larger screen ???
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Expanded(
+                              child: Icon(
+                                Icons.watch_later_outlined,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                  _selectedTime.format(context).toString()),
+                            ),
+                            const Expanded(child: Icon(Icons.arrow_forward)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -222,7 +253,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   }
                                 }
                               },
-                              child: const Text('Incoming'),
+                              child: const Text('Sell'),
                             ),
                           ),
                           const SizedBox(width: 30),
@@ -249,7 +280,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   }
                                 }
                               },
-                              child: const Text('Outgoing'),
+                              child: const Text('Buy'),
                             ),
                           ),
                         ],
@@ -263,6 +294,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
+  List<DropdownMenuItem<Client>> _getClientDropdownMenuItem(
+      List<Client> clients) {
+    List<Client> newClientList = [Client(name: '', phone: '', email: '')];
+    newClientList.addAll(clients);
+    return newClientList.map((e) {
+      return DropdownMenuItem(value: e, child: Text(e.name));
+    }).toList();
+  }
+
   Transaction _createNewTransaction({required bool incoming}) {
     return Transaction(
       title: _title,
@@ -271,6 +311,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       account: widget.selectedAccount.toJson(),
       incoming: incoming,
       txDate: _selectedDate.millisecondsSinceEpoch,
+      client: _client == null ? null : _client?.toJson(),
       txTime: {'hour': _selectedTime.hour, 'minute': _selectedTime.minute},
     );
   }

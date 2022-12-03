@@ -132,4 +132,12 @@ class DatabaseService {
           },
         );
   }
+
+  DocumentReference get userRef {
+    return _userRef;
+  }
+
+  FirebaseFirestore get database {
+    return _database;
+  }
 }

@@ -2,10 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:topaz/config/custom_theme.dart';
 import 'package:topaz/models/account/account.dart';
+import 'package:topaz/models/client/client.dart';
 import 'package:topaz/models/message/message.dart';
 import 'package:topaz/screens/account/account_screen.dart';
 import 'package:topaz/screens/account/add_account_screen.dart';
 import 'package:topaz/screens/auth/authenticate_screen.dart';
+import 'package:topaz/screens/clients/add_client_screen.dart';
+import 'package:topaz/services/client_db_service.dart';
+import 'package:topaz/screens/clients/clients_screen.dart';
 import 'package:topaz/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/services/database_service.dart';
@@ -35,13 +39,20 @@ class Wrapper extends StatelessWidget {
             value: user != null
                 ? DatabaseService(uid: user.uid).messagetListStream()
                 : null),
+        StreamProvider<List<Client>>.value(
+            initialData: const [],
+            value: user != null
+                ? ClientDBService(uid: user.uid).messagetListStream()
+                : null),
       ],
       child: MaterialApp(
         title: 'Topaz',
         initialRoute: '/',
         routes: {
           HomeScreen.routeName: ((context) => const HomeScreen()),
+          ClientsScreen.routeName: ((context) => const ClientsScreen()),
           AddAccountScreen.routeName: ((context) => const AddAccountScreen()),
+          AddClientScreen.routeName: ((context) => AddClientScreen()),
           AccountScreen.routeName: (context) => AccountScreen(
               selectedAccount: Provider.of<List<Account>>(context).first),
         },

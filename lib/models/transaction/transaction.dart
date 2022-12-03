@@ -9,6 +9,7 @@ class Transaction {
   final Map<String, dynamic> account;
   final int txDate;
   final Map<String, dynamic> txTime;
+  Map<String, dynamic>? client;
 
   Transaction(
       {this.id,
@@ -18,7 +19,8 @@ class Transaction {
       required this.account,
       required this.incoming,
       required this.txDate,
-      required this.txTime}); //{hours: 10, minutes: 55}
+      required this.txTime,
+      this.client}); //{hours: 10, minutes: 55}
 
   Transaction.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -28,7 +30,8 @@ class Transaction {
         incoming = json['incoming'],
         account = json['account'],
         txDate = json['tx_date'],
-        txTime = json['tx_time'];
+        txTime = json['tx_time'],
+        client = json['client'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -38,7 +41,8 @@ class Transaction {
         'incoming': incoming,
         'account': account,
         'tx_date': txDate,
-        'tx_time': txTime
+        'tx_time': txTime,
+        'client': client,
       };
 
   num get totalPrice {
@@ -50,6 +54,14 @@ class Transaction {
     if (account == null) {
       return transactions;
     }
+
+    //sort by date desc
+    transactions.sort(
+      (a, b) {
+        return b.txDate.compareTo(a.txDate);
+      },
+    );
+
     return transactions
         .where(
           (t) => t.account['id'] == account.id,

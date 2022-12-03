@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/models/account/account.dart';
@@ -33,10 +32,23 @@ class _AccountScreenState extends State<AccountScreen> {
     final allTransactions = Provider.of<List<Transaction>>(context);
     final totalTransactions = Transaction.getTotalTransactionByAccount(
         widget.selectedAccount, allTransactions);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accounts'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTransactionScreen(
+                  selectedAccount: widget.selectedAccount,
+                ),
+                fullscreenDialog: true,
+              ),
+            ),
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -116,8 +128,8 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 5,
                           ),
                           Text(
-                            totalTransactions.toString(),
-                            style: Theme.of(context).textTheme.headline5,
+                            formatNumberAsMoney(totalTransactions),
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                           const SizedBox(
                             height: 20,
@@ -136,6 +148,13 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
           ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 2, 10, 2),
+            child: const Align(
+              alignment: Alignment.centerRight,
+              child: Icon(Icons.filter_alt_outlined),
+            ),
+          ),
           Expanded(
             flex: 4,
             child: SingleChildScrollView(
@@ -145,44 +164,42 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 10,
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.arrow_up_arrow_down,
-              size: 30,
-              color: CustomColorCollection()
-                  .findColorById(widget.selectedAccount.icon['color'])
-                  ?.color,
-            ),
-            label: 'New Transaction',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.filter_alt_rounded),
-            label: 'Filter',
-          ),
-        ],
-        currentIndex: 1,
-        selectedItemColor: Colors.white,
-        onTap: (value) {
-          if (value == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddTransactionScreen(
-                  selectedAccount: widget.selectedAccount,
-                ),
-                fullscreenDialog: true,
-              ),
-            );
-          }
-        },
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   elevation: 10,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         CupertinoIcons.arrow_up_arrow_down,
+      //         size: 30,
+      //         color: Colors.white,
+      //       ),
+      //       label: 'New Transaction',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.filter_alt_rounded),
+      //       label: 'Filter',
+      //     ),
+      //   ],
+      //   currentIndex: 1,
+      //   selectedItemColor: Colors.white,
+      //   onTap: (value) {
+      //     if (value == 1) {
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => AddTransactionScreen(
+      //             selectedAccount: widget.selectedAccount,
+      //           ),
+      //           fullscreenDialog: true,
+      //         ),
+      //       );
+      //     }
+      //   },
+      // ),
     );
   }
 }

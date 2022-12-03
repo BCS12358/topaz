@@ -14,10 +14,13 @@ void showSnackBar(BuildContext context, String message) {
   final snackBar = SnackBar(
     content: Text(
       message,
-      style: TextStyle(color: Theme.of(context).hintColor),
+      style: const TextStyle(
+        color: Colors.yellow,
+        fontSize: 15,
+      ),
     ),
     duration: const Duration(
-      seconds: 2,
+      seconds: 3,
     ),
     backgroundColor: Theme.of(context).cardColor,
   );

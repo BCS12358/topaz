@@ -28,6 +28,20 @@ class AccountUtils {
         .fold(0.0, (a, b) => a + b);
   }
 
+  static num getNumberSales({required List<Transaction> transactions}) {
+    if (transactions.isEmpty) {
+      return 0;
+    }
+    return transactions.where((tx) => tx.incoming == true).toList().length;
+  }
+
+  static num getNumberPurchase({required List<Transaction> transactions}) {
+    if (transactions.isEmpty) {
+      return 0;
+    }
+    return transactions.where((tx) => tx.incoming == false).toList().length;
+  }
+
   static num totalOutgoing({required List<Transaction> transactions}) {
     if (transactions.isEmpty) {
       return 0;

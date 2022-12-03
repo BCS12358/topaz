@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topaz/screens/message/message_screen.dart';
+import 'package:topaz/screens/settings/settings_menu_screen.dart';
 import 'package:topaz/screens/widgets/account_list_view.dart';
 import 'package:topaz/screens/widgets/notification_icon.dart';
 import 'package:topaz/screens/widgets/transaction_list_view.dart';
@@ -30,14 +30,18 @@ class _HomeScreenState extends State<HomeScreen> {
           number: messages.length,
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              icon: const Icon(
-                Icons.settings,
-                color: Colors.white,
-              )),
+          Builder(
+            builder: (context) {
+              return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  icon: const Icon(
+                    Icons.menu,
+                    color: Colors.white,
+                  ));
+            },
+          )
         ],
       ),
       body: Column(
@@ -72,7 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const Drawer(
         child: MessageScreen(),
       ),
-      endDrawer: const Drawer(),
+      endDrawer: const Drawer(
+        child: SettingsMenuScreen(),
+      ),
       // onEndDrawerChanged: ((isOpened) {}),
     );
   }
